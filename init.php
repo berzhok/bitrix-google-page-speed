@@ -5,6 +5,18 @@ function pageSpeedReplace(&$content)
     global $USER;
     if (is_object($USER) && $USER->IsAdmin())
         return;
+
+    $arPatternsToRemove = Array
+    (
+        '/<link.+?href=".+?kernel_main\/kernel_main\.css\?\d+"[^>]+>/',
+        '/<link.+?href=".+?main\/popup\.css\?\d+"[^>]+>/',
+        '/<script.+?>BX\.(setCSSList|setJSList)\(\[.+?\]\).*?<\/script>/',
+    );
+
+
+    $content = preg_replace($arPatternsToRemove, "", $content);
+    $content = preg_replace("/\n{2,}/", "\n", $content);
+
     $cssPattern = '/<link.+?href="(.+?)template_(.+?)\/template_(.+?)\.css\?\d+"[^>]+>/';
     if(preg_match($cssPattern, $content, $matches))
     {
